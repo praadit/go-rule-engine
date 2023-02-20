@@ -7,15 +7,15 @@ import (
 	"strconv"
 	"strings"
 
-	"math/rand"
-
-	"github.com/satori/go.uuid"
+	"github.com/google/uuid"
 )
 
-/**
-  利用树来计算规则引擎
-  输入：子规则ID和逻辑值map
-  输出：规则匹配结果，导致匹配false的子规则ID/导致true的IDs
+/*
+*
+
+	利用树来计算规则引擎
+	输入：子规则ID和逻辑值map
+	输出：规则匹配结果，导致匹配false的子规则ID/导致true的IDs
 */
 func (rs *Rules) calculateExpressionByTree(values map[int]bool) (bool, []int, error) {
 	var ruleIDs []int
@@ -43,8 +43,10 @@ func (rs *Rules) calculateExpressionByTree(values map[int]bool) (bool, []int, er
 	return head.Val, ruleIDs, nil
 }
 
-/**
-  将逻辑表达式转化为树，返回树的根节点
+/*
+*
+
+	将逻辑表达式转化为树，返回树的根节点
 */
 func logicToTree(logic string) *Node {
 	if logic == "" || logic == " " {
@@ -60,8 +62,10 @@ func logicToTree(logic string) *Node {
 	return head
 }
 
-/**
-  计算树所有节点值的核心方法
+/*
+*
+
+	计算树所有节点值的核心方法
 */
 func (node *Node) traverseTreeInPostOrderForCalculate(values map[int]bool) error {
 	if node == nil {
@@ -110,8 +114,10 @@ func (node *Node) traverseTreeInPostOrderForCalculate(values map[int]bool) error
 	return nil
 }
 
-/**
-  层序遍历获取导致树顶false的叶子节点
+/*
+*
+
+	层序遍历获取导致树顶false的叶子节点
 */
 func (node *Node) traverseTreeInLayerToFindFailRule(ids []int) ([]int, error) {
 	var buf []*Node
@@ -145,8 +151,10 @@ func (node *Node) traverseTreeInLayerToFindFailRule(ids []int) ([]int, error) {
 	return ids, nil
 }
 
-/**
-  层序遍历获取导致树顶true的叶子节点
+/*
+*
+
+	层序遍历获取导致树顶true的叶子节点
 */
 func (node *Node) traverseTreeInLayerToFindSuccessRule(ids []int) ([]int, error) {
 	var buf []*Node
@@ -314,13 +322,9 @@ func replaceBiggestBracketContentAtOnce(expr string, mapReplace map[string]strin
 	if flag {
 		// delete last )
 		toReplace = toReplace[:len(toReplace)-1]
-		var key string
-		if u, err := uuid.NewV1(); err != nil {
-			// uuid error, just give me something random
-			key = strconv.FormatFloat(rand.Float64(), 'f', -1, 64)
-		} else {
-			key = u.String()
-		}
+
+		u := uuid.New()
+		key := u.String()
 
 		result = strings.Replace(result, "("+string(toReplace)+")", key, 1)
 		mapReplace[key] = strings.Trim(string(toReplace), " ")
